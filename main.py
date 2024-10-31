@@ -50,7 +50,7 @@ def coin(message):
 
 @bot.message_handler(func=lambda msg: msg.text == '/shop')
 def get_user_photo(message):
-    photo1 = open('мысль понят.jpg', 'rb')
+    photo1 = open('мысль понятна.jpg', 'rb')
     photo2 = open('ух ручка б.jpg', 'rb')
     bot.send_photo(message.chat.id, photo1, caption='Ручки мисис 1')
     bot.send_photo(message.chat.id, photo2, caption='Ручки мисис 2')
