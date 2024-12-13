@@ -1,26 +1,22 @@
 import telebot
 from telebot import types
-import os
 
-id_bot = os.getenv("TOKEN")
+id_bot = '7787362795:AAHPCI8elsUlEuES4D8eYgfmguP4z4Eph7Q'
 bot = telebot.TeleBot(id_bot)
 
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    markup = types.InlineKeyboardMarkup()
+    button = types.InlineKeyboardButton("Каталог ✍️", callback_data="shop")
+    markup.add(button)
     mess = f'''
 Здравствуйте, <b>{message.from_user.first_name}</b> и добро пожаловать в мир <b>SIGMA & CO</b>! 🎉👋
 
-Мы рады представить вам уникальную возможность приобретать стильные ручки и блокноты с помощью нашего способа оплаты – <b>"MISIS COIN"</b>! 🪙
+Мы рады представить вам уникальную возможность приобретать стильные ручки с помощью нашего способа оплаты – <b>"MISIS COIN"</b>! 🪙
 
-В нашем магазине вы найдёте широкий ассортимент товаров, от классических решений до современных трендов. Просто выберите понравившиеся позиции, и оплатите их с помощью <b>"MISIS COIN"</b> – это просто и удобно!
-
-Если у вас возникнут вопросы или нужна помощь - загляните в меню. 😉 Приятных покупок! 🛍️
 '''
-    bot.send_message(message.chat.id, mess, parse_mode='html')
-    if (message.from_user.first_name == 'сашка') or (message.from_user.first_name == 'at') or (message.from_user.first_name == 'Edgar'):
-        mess1 = 'Здравстуй, Хозяин!'
-        bot.send_message(message.chat.id, mess1, parse_mode='html')
+    bot.send_message(message.chat.id, mess, parse_mode='html', reply_markup=markup)
 
 
 @bot.message_handler(commands=['help'])
@@ -34,34 +30,43 @@ def help(message):
     bot.send_message(message.chat.id, mess, parse_mode='html')
 
 
-@bot.message_handler(func=lambda msg: msg.text == '/coin')
-def coin(message):
-    mess = '''<b>MISIS COIN</b> - это система баллов в виде "бобов", которые позже превраться в баллы.'''
-    bot.send_message(message.chat.id, mess, parse_mode='html')
+@bot.message_handler(commands=['shop'])
+def shop(message):
+    markup1 = types.InlineKeyboardMarkup()
+    button1 = types.InlineKeyboardButton("Купить", callback_data="buy1")
+    markup1.add(button1)
+    photo1 = open('Мысль понятна?.jpg', 'rb')
 
+    markup2 = types.InlineKeyboardMarkup()
+    button2 = types.InlineKeyboardButton("Купить", callback_data="buy2")
+    markup2.add(button2)
+    photo2 = open('misis university.jpg', 'rb')
 
-# @bot.message_handler(content_types=['shop'])
-# def shop(message):
-#     photo1 = open('', 'rb')
-#     photo2 = open('', 'rb')
-#     bot.send_photo(message.chat.id, photo1, caption='Ручки мисис 1')
-#     bot.send_photo(message.chat.id, photo2, caption='Ручки мисис 2')
+    bot.send_photo(message.chat.id, photo1, caption='Мысль понятна?', reply_markup=markup1)
+    bot.send_photo(message.chat.id, photo2, caption='Misis university', reply_markup=markup2)
 
-
-@bot.message_handler(func=lambda msg: msg.text == '/shop')
-def get_user_photo(message):
-    photo1 = open('мысль понятна.jpg', 'rb')
-    photo2 = open('ух ручка б.jpg', 'rb')
-    bot.send_photo(message.chat.id, photo1, caption='Ручки мисис 1')
-    bot.send_photo(message.chat.id, photo2, caption='Ручки мисис 2')
     mess = '''
-Для того, чтобы купить ручки, вам нужно перейти в телеграмм бот (@misiscoinbot 🪙) и присылать ему:
+Для того, чтобы купить ручки, вам нужно перейти в телеграмм бот <a href="https://t.me/misiscoinbot">@misiscoinbot</a> и присылать ему:
 <b><code>/spend sigma 10 v</code></b>
-(<u>это можно скопировать при нажатии</u>)
-
-После чего вы пишите (@at_1l1) за подтверждением оплаты и уточнением выбранного товара. 😉  
+(<u>это можно скопировать при нажатии</u>)  
     '''
     bot.send_message(message.chat.id, mess, parse_mode='html')
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def query_handler(call):
+    if call.data == 'shop':
+        shop(call.message)
+
+    username = call.from_user.username
+
+    if call.data == 'buy1':
+        bot.send_message(call.message.chat.id, 'Ваш заказ отправлен администратору.')
+        bot.send_message(921640620, f'Вам пришел заказ "Мысль понятна?" от @{username}')
+
+    if call.data == 'buy2':
+        bot.send_message(call.message.chat.id, 'Ваш заказ отправлен администратору.')
+        bot.send_message(921640620, f'Вам пришел заказ "Мисис ручка?" от @{username}')
 
 
 bot.polling(none_stop=True, interval=0)
