@@ -66,7 +66,7 @@ def query_handler(call):
 
     if call.data == 'buy2':
         bot.send_message(call.message.chat.id, 'Ваш заказ отправлен администратору.')
-        bot.send_message(921640620, f'Вам пришел заказ "Мисис ручка?" от @{username}')
+        bot.send_message(921640620, f'Вам пришел заказ "Мисис ручка" от @{username}')
 
 
 bot.polling(none_stop=True, interval=0)
